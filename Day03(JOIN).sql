@@ -199,5 +199,5 @@ ORDER BY e.EMPLOYEE_ID;
 --문제 11. 
 ----6. EMPLOYEES 테이블에서 left join하여 관리자(매니저)와, 매니저의 이름, 매니저의 급여 까지 출력하세요
 ----매니저 아이디가 없는 사람은 배제하고 급여는 역순으로 출력하세요
-SELECT * FROM EMPLOYEES;
+
 
