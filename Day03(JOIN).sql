@@ -1,0 +1,203 @@
+-----JOIN
+
+SELECT * FROM EMPLOYEES e 
+JOIN DEPARTMENTS d 
+ON e.DEPARTMENT_ID = d.DEPARTMENT_ID;
+
+--LEFT OUTER 기준 왼쪽 테이블의 정보 다 나옴
+--왼쪽 테이블에 매칭되는 오른쪽 테이블의 정보가 없을 경우 NULL로 나온다.
+SELECT * FROM EMPLOYEES e 
+LEFT OUTER JOIN DEPARTMENTS d 
+ON e.DEPARTMENT_ID = d.DEPARTMENT_ID;
+
+--RIGHT OUTER 기준 오른쪽 테이블의 정보 다 나옴
+--오른쪽 테이블에 매칭되는 왼쪽 테이블의 정보가 없을 경우 NULL로 나온다.
+SELECT * FROM EMPLOYEES e 
+RIGHT OUTER JOIN DEPARTMENTS d 
+ON e.DEPARTMENT_ID = d.DEPARTMENT_ID;
+
+--FULL OUTER 
+--데이터의 유실 없이 왼쪽 테이블정보, 오른쪽 테이블 정보 모두 출력 된다.
+SELECT * FROM EMPLOYEES e 
+FULL OUTER JOIN DEPARTMENTS d 
+ON e.DEPARTMENT_ID = d.DEPARTMENT_ID;
+
+--CROSS JOIN
+--잘못된 JOIN 데이터 => 더미데이터 만들 때만 사용되고 사용되지 않는다.
+SELECT * FROM EMPLOYEES e 
+CROSS JOIN DEPARTMENTS d ;
+----------------------------------------------
+SELECT * FROM INFO;
+SELECT * FROM AUTH;
+--INNER JOIN 
+-- PK키와 FR키가 맞지 않는 값은 조회되지 않는다.
+SELECT * FROM INFO i JOIN AUTH a ON i.AUTH_ID = a.AUTH_ID;
+
+SELECT i.ID, i.TITLE, i.AUTH_ID , a.NAME
+FROM INFO i JOIN AUTH a ON i.AUTH_ID = a.AUTH_ID;
+
+SELECT * FROM INFO i LEFT OUTER JOIN AUTH a ON i.AUTH_ID = a.AUTH_ID;
+SELECT * FROM INFO i RIGHT OUTER JOIN AUTH a ON i.AUTH_ID = a.AUTH_ID;
+SELECT * FROM INFO i FULL OUTER JOIN AUTH a ON i.AUTH_ID = a.AUTH_ID;
+SELECT * FROM INFO i CROSS JOIN AUTH;
+
+--테이블 앨리어스
+SELECT * FROM INFO i 
+INNER JOIN AUTH a 
+ON i.AUTH_ID = a.AUTH_ID;
+
+-- WHERE
+SELECT * 
+FROM INFO i JOIN AUTH a 
+ON i.AUTH_ID = a.AUTH_ID
+WHERE ID IN(1,2)
+ORDER BY ID DESC;
+
+SELECT * FROM INFO JOIN AUTH USING (AUTH_ID);
+-------------------------------------------------------------------------
+--OUTER JOIN
+--LEFT OUTER JOIN
+SELECT * FROM INFO i LEFT JOIN AUTH a 
+ON i.auth_id = a.auth_id;
+SELECT * FROM INFO i LEFT JOIN AUTH a 
+ON i.auth_id = a.auth_id;
+SELECT * FROM AUTH a RIGHT JOIN INFO i
+ON i.auth_id = a.auth_id;
+SELECT * FROM INFO i FULL OUTER JOIN AUTH a 
+ON i.auth_id = a.auth_id;
+
+--CROSS JOIN
+-- 잘못된 조인의 형태를 만들어서 더미데이터로 활용
+SELECT * FROM INFO i CROSS JOIN AUTH a;
+-----------------------------------------------------------------
+SELECT * FROM EMPLOYEES e JOIN DEPARTMENTS d ON e.DEPARTMENT_ID = d.DEPARTMENT_ID;
+SELECT * FROM EMPLOYEES e LEFT JOIN DEPARTMENTS d ON e.DEPARTMENT_ID = d.DEPARTMENT_ID;
+--조인은 여러번 들어갈 수 있다.
+SELECT * FROM EMPLOYEES e JOIN DEPARTMENTS d ON e.DEPARTMENT_ID = d.DEPARTMENT_ID
+                        JOIN LOCATIONS l ON d.LOCATION_ID = l.LOCATION_ID;
+
+--SELF JOUN
+SELECT * FROM EMPLOYEES;
+SELECT * FROM EMPLOYEES e LEFT JOIN EMPLOYEES m ON e.MANAGER_ID=m.EMPLOYEE_ID
+ORDER BY e.EMPLOYEE_ID;
+SELECT e1.* , e2.FIRST_NAME AS 상급자 FROM EMPLOYEES e1 LEFT JOIN EMPLOYEES e2
+ON e1.MANAGER_ID = e2.EMPLOYEE_ID;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------------------------------------------------------------
+--문제 1.
+---EMPLOYEES 테이블과, DEPARTMENTS 테이블은 DEPARTMENT_ID로 연결되어 있습니다.
+---EMPLOYEES, DEPARTMENTS 테이블을 엘리어스를 이용해서
+--각각 INNER , LEFT OUTER, RIGHT OUTER, FULL OUTER 조인 하세요. (달라지는 행의 개수 확인
+SELECT *
+FROM EMPLOYEES e
+JOIN DEPARTMENTS d
+ON e.DEPARTMENT_ID = d.DEPARTMENT_ID;
+
+SELECT *
+FROM EMPLOYEES e
+LEFT OUTER JOIN DEPARTMENTS d
+ON e.DEPARTMENT_ID = d.DEPARTMENT_ID;
+
+SELECT *
+FROM EMPLOYEES e
+RIGHT OUTER JOIN DEPARTMENTS d
+ON e.DEPARTMENT_ID = d.DEPARTMENT_ID;
+
+SELECT *
+FROM EMPLOYEES e
+FULL OUTER JOIN DEPARTMENTS d
+ON e.DEPARTMENT_ID = d.DEPARTMENT_ID;
+
+--문제 2.
+---EMPLOYEES, DEPARTMENTS 테이블을 INNER JOIN하세요
+--조건)employee_id가 200인 사람의 이름, department_id를 출력하세요
+--조건)이름 컬럼은 first_name과 last_name을 합쳐서 출력합니다
+SELECT e.FIRST_NAME ||e.LAST_NAME 사원이름, d.DEPARTMENT_ID, e.EMPLOYEE_ID
+FROM EMPLOYEES e
+JOIN DEPARTMENTS d
+ON e.DEPARTMENT_ID = d.DEPARTMENT_ID
+WHERE e.EMPLOYEE_ID = 200;
+
+--문제 3.
+---EMPLOYEES, JOBS테이블을 INNER JOIN하세요
+--조건) 모든 사원의 이름과 직무아이디, 직무 타이틀을 출력하고, 이름 기준으로 오름차순 정렬
+--HINT) 어떤 컬럼으로 서로 연결되 있는지 확인
+SELECT e.FIRST_NAME, e.JOB_ID, j.JOB_TITLE
+FROM EMPLOYEES e
+JOIN JOBS j
+ON j.JOB_ID = e.JOB_ID
+ORDER BY FIRST_NAME;
+
+--문제 4.
+----JOBS테이블과 JOB_HISTORY테이블을 LEFT_OUTER JOIN 하세요.
+
+SELECT *
+FROM JOBS j 
+LEFT OUTER JOIN JOB_HISTORY h
+ON j.JOB_ID = h.JOB_ID;
+--문제 5.
+----Steven King의 부서명을 출력하세요.
+SELECT * FROM DEPARTMENTS;
+SELECT e.FIRST_NAME || e.LAST_NAME 사원이름, d.DEPARTMENT_NAME
+FROM EMPLOYEES e JOIN DEPARTMENTS d
+ON e.DEPARTMENT_ID = d.DEPARTMENT_ID
+WHERE FIRST_NAME||LAST_NAME = 'StevenKing';
+--문제 6.
+----EMPLOYEES 테이블과 DEPARTMENTS 테이블을 Cartesian Product(Cross join)처리하세요
+SELECT *
+FROM EMPLOYEES e CROSS JOIN DEPARTMENTS d;
+
+--문제 7.
+----EMPLOYEES 테이블과 DEPARTMENTS 테이블의 부서번호를 조인하고 SA_MAN 사원만의 사원번호, 이름, 
+--급여, 부서명, 근무지를 출력하세요. (Alias를 사용)
+
+SELECT EMPLOYEE_ID, FIRST_NAME||LAST_NAME, SALARY, DEPARTMENT_NAME, STREET_ADDRESS
+FROM EMPLOYEES e JOIN DEPARTMENTS d
+ON e.DEPARTMENT_ID = d.DEPARTMENT_ID
+JOIN LOCATIONS l 
+ON d.LOCATION_ID = l.LOCATION_ID
+WHERE e.JOB_ID = 'SA_MAN';
+
+
+--문제 8.
+---- employees, jobs 테이블을 조인 지정하고 job_title이 'Stock Manager', 'Stock Clerk'인 직원 정보만
+--출력하세요.
+
+SELECT *
+FROM EMPLOYEES e JOIN JOBS j ON e.JOB_ID = j.JOB_ID
+WHERE j.JOB_TITLE IN ('Stock Manager','Stock Clerk');
+
+--문제 9.
+---- departments 테이블에서 직원이 없는 부서를 찾아 출력하세요. LEFT OUTER JOIN 사용
+SELECT * 
+FROM DEPARTMENTS d LEFT OUTER JOIN EMPLOYEES e 
+ON d.DEPARTMENT_ID = e.DEPARTMENT_ID
+WHERE e.EMPLOYEE_ID IS NULL; 
+
+--문제 10. 
+---join을 이용해서 사원의 이름과 그 사원의 매니저 이름을 출력하세요
+--힌트) EMPLOYEES 테이블과 EMPLOYEES 테이블을 조인하세요.
+SELECT * FROM EMPLOYEES ORDER BY MANAGER_ID;
+SELECT e.FIRST_NAME||' '||e.LAST_NAME 사원, m.FIRST_NAME||' '||m.LAST_NAME 매니저
+FROM EMPLOYEES e JOIN EMPLOYEES m
+ON e.MANAGER_ID = m.EMPLOYEE_ID
+ORDER BY e.EMPLOYEE_ID;
+
+--문제 11. 
+----6. EMPLOYEES 테이블에서 left join하여 관리자(매니저)와, 매니저의 이름, 매니저의 급여 까지 출력하세요
+----매니저 아이디가 없는 사람은 배제하고 급여는 역순으로 출력하세요
+SELECT * FROM EMPLOYEES;
+
